@@ -1,11 +1,30 @@
-const express = require ('express');
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+
 const app = express();
-const jwt = require('jsonwebtoken');
+app.use(cors());
 
-app.listen(666, function(){
-    console.log('Servidor conectado http://127.0.0.1:666')
+//Importacion de rutas
+const rutasUsuarios = require('./routes/routes_usuarios');
+
+app.use(bodyParser.json());
+
+//Conexion a la base de datos
+require('./conexion');
+
+app.use(rutasUsuarios);
+
+//Inicializar el servidor
+const PORT = 666;
+app.listen(PORT, () =>{
+    console.log('Servidor corriendo en el puerto http://localhost:666');
 });
 
-app.get('/', function(req, res){
-    res.send('<h1>Servidor en funcionamiento</h1>');
-});
+app.get('/', 
+    function (req, res)
+    {
+        res.send('<h2>Servidor ok</h2>');
+    }
+);
