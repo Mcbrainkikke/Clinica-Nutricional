@@ -8,13 +8,14 @@ app.use(cors());
 
 //Importacion de rutas
 const rutasUsuarios = require('./routes/routes_usuarios');
+const rutasCitas = require('./routes/routes_citas');
 
 app.use(bodyParser.json());
 
 //Conexion a la base de datos
 require('./conexion');
 
-app.use(rutasUsuarios);
+app.use(rutasUsuarios, rutasCitas);
 
 //Inicializar el servidor
 const PORT = 666;
