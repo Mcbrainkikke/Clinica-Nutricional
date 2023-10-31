@@ -59,6 +59,24 @@ router.post('/api/usuarios/iniciarsesion', async (req, res) => {
     }
 });
 
+// Ruta para obtener la información del usuario después de iniciar sesión
+router.get('/api/usuarios/informacion/:numeroDocumento', async (req, res) => {
+    try {
+        const numeroDocumento = req.params.numeroDocumento;
+
+        // Buscar el usuario en la base de datos usando el número de documento
+        const usuario = await Usuario.findOne({ numeroDocumento });
+
+        if (!usuario) {
+            return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+        }
+
+        res.status(200).json({ nombre: usuario.nombre, /*...otros datos del usuario...*/ });
+    } catch (error) {
+        res.status(500).json({ mensaje: 'Error en el servidor' });
+    }
+});
+
 
 
 module.exports = router;

@@ -8,6 +8,9 @@ export default function IniciarSesion() {
         contraseña: ""
     });
 
+    const [successMessage, setSuccessMessage] = useState("");
+    const [userName, setUserName] = useState("");
+
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
@@ -18,10 +21,20 @@ export default function IniciarSesion() {
 
         try {
             const response = await axios.post("/api/usuarios/iniciarsesion", formData);
-            console.log(response.data.mensaje); // Mensaje de inicio de sesión exitoso
+            console.log(response.data.mensaje); // Mensaje de inicio de sesión exitoso            
+
+            setSuccessMessage(response.data.mensaje);
+
+            const userResponse = await axios.get(`/api/usuarios/informacion/${formData.numeroDocumento}`);
+            setUserName(userResponse.data.nombre);
             
         } catch (error) {
-            console.error("Error al iniciar sesión:", error.response.data);
+            if (error.response && error.response.status === 401) {
+                setSuccessMessage("Credenciales inválidas. Inicio de sesión fallido.");
+            } else {
+                setSuccessMessage("Error al iniciar sesión. Inténtalo de nuevo más tarde.");
+            }
+            console.error("Error al iniciar sesión:", error.response ? error.response.data : error.message);
         }
     };
            
@@ -53,8 +66,11 @@ export default function IniciarSesion() {
                         <div className="form-group">
                             <button type="submit" className="btn btn-outline-primary text-white">Iniciar Sesion</button>
                         </div>
-                    </form>
+                    </form>                    
                     <button className="btn btn-outline-primary text-white">Cancelar</button>
+                    {/* Mostrar mensajes en la página */}
+                    {successMessage && <p style={{ color: successMessage.includes('exitoso') ? 'white' : 'red' }}>{successMessage}</p>}
+                    {userName && <p style={{ color: 'white' }}>Bienvenido, {userName}</p>}
                 </div>
             </div>
         </div>

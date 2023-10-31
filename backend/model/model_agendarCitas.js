@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 
-const CitaSchema = new mongoose.Schema({
+const citaSchema = new mongoose.Schema({
   fecha: {
     type: Date,
     required: true
-  }
+  }  
 });
 
-const Cita = mongoose.model('Cita', CitaSchema);
+const Cita = mongoose.model('Cita', citaSchema);
 
 module.exports = Cita;
+
