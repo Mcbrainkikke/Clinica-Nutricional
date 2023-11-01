@@ -9,8 +9,14 @@ const citaController = {
       const nuevaCita = new Cita({ fecha, hora });
       console.log('Nueva cita:', nuevaCita);
 
-      await nuevaCita.save();
-      res.status(201).json({ mensaje: 'Cita creada exitosamente', cita: nuevaCita });
+      await nuevaCita.save((error, savedCita) => {
+        if (error) {
+          console.error('Error al guardar la cita:', error);
+          return res.status(500).json({ error: 'Error al guardar la cita' });
+        }
+        console.log('Cita guardada:', savedCita);
+        res.status(201).json({ mensaje: 'Cita creada exitosamente', cita: savedCita });
+      });
     } catch (error) {
       console.error('Error al agregar la cita:', error);
       res.status(500).json({ error: 'Error al agregar la cita' });
@@ -22,7 +28,8 @@ const citaController = {
       const { fecha } = req.body;
       const citasAgendadas = await Cita.find({ fecha });
       const horasAgendadas = citasAgendadas.map(cita => cita.hora);
-      const horasTotales = ['09:00', '10:00', '11:00', '12:00']; // Ejemplo de horas disponibles
+
+      const horasTotales = ['09:00', '10:00', '11:00', '12:00']; // Simulación de horas disponibles
       const horasDisponibles = horasTotales.filter(hora => !horasAgendadas.includes(hora));
 
       res.status(200).json({ horasDisponibles });
@@ -33,4 +40,5 @@ const citaController = {
 };
 
 module.exports = citaController;
+
 

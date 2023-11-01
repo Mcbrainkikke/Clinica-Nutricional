@@ -14,7 +14,11 @@ const SolicitudCita = () => {
       if (fechaCita && horaSeleccionada) {
         const confirmAgendar = window.confirm(`¿Desea agendar la cita para las ${horaSeleccionada}?`);
         if (confirmAgendar) {
-          // Aquí puedes realizar la solicitud para agendar la cita
+          const response = await axios.post('/api/citas/agregar', {
+            fecha: fechaCita,
+            hora: horaSeleccionada
+          });
+          console.log(response.data); // Puedes manejar la respuesta del backend aquí
           console.log(`Cita agendada para las ${horaSeleccionada} el día ${fechaCita}`);
         }
       } else {
@@ -39,11 +43,22 @@ const SolicitudCita = () => {
     }
   };
 
+  const [mensaje, setMensaje] = useState('');
   // Función para seleccionar la hora
-  const handleSeleccionHora = (hora) => {
-    const confirmSeleccion = window.confirm(`¿Desea seleccionar la hora ${hora}?`);
+  const handleSeleccionHora = async (hora) => {
+    const confirmSeleccion = window.confirm(`¿Desea agendar la cita para las ${hora}?`);
     if (confirmSeleccion) {
-      setHoraSeleccionada(hora);
+      try {
+        const response = await axios.post('/api/citas/agregar', {
+          fecha: fechaCita,
+          hora: hora
+        });
+        setMensaje('Cita agendada con éxito'); //mensaje en el frontend
+        console.log(response.data); // Manejar la respuesta del backend aquí
+        console.log(`Cita agendada para las ${hora} el día ${fechaCita}`);
+      } catch (error) {
+        console.error('Error al agendar la cita:', error);
+      }
     }
   };
 
@@ -72,7 +87,7 @@ const SolicitudCita = () => {
               />
             </div>
             <br />
-            <button type="submit" className='btn btn-outline-primary' style={{ backgroundColor: 'white' }}>Buscar Cita</button>
+            {/*<button type="submit" className='btn btn-outline-primary' style={{ backgroundColor: 'white' }}>Buscar Cita</button>*/}
           </form>
         </div>
       </div>
@@ -96,6 +111,11 @@ const SolicitudCita = () => {
         </div>
       </div>
       }
+      {mensaje && (
+      <div style={{ marginBottom: '20px', paddingBottom: '20px' }}>
+        <p className='text-white'>{mensaje}</p> {/* Mensaje */}
+      </div>
+    )}
     </div>
   );
 };
