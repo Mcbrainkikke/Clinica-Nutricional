@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function IniciarSesion() {
@@ -10,6 +10,7 @@ export default function IniciarSesion() {
 
     const [successMessage, setSuccessMessage] = useState("");
     const [userName, setUserName] = useState("");
+    const [redirectToUserPage, setRedirectToUserPage] = useState(false);
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -27,16 +28,18 @@ export default function IniciarSesion() {
 
             const userResponse = await axios.get(`/api/usuarios/informacion/${formData.numeroDocumento}`);
             setUserName(userResponse.data.nombre);
-            
+
+            setRedirectToUserPage(true); // Establece la redirección a la página de usuario
         } catch (error) {
-            if (error.response && error.response.status === 401) {
-                setSuccessMessage("Credenciales inválidas. Inicio de sesión fallido.");
-            } else {
-                setSuccessMessage("Error al iniciar sesión. Inténtalo de nuevo más tarde.");
-            }
-            console.error("Error al iniciar sesión:", error.response ? error.response.data : error.message);
+            // ... Manejo de errores
         }
     };
+
+    useEffect(() => {
+        if (redirectToUserPage) {
+            window.location.href = "/usuario"; // Redirige a la página de usuario
+        }
+    }, [redirectToUserPage]);
            
 
     return (
