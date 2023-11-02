@@ -5,7 +5,7 @@ const Usuario = require('../model/model_usuarios');
 // Ruta para el registro de nuevos usuarios
 router.post('/api/usuarios/registro', async (req, res) => {
     try {
-        const { tipoDocumento, numeroDocumento, correo, contraseña } = req.body;
+        const { tipoDocumento, numeroDocumento, nombre, apellido, correo, contraseña } = req.body;
 
         // Verificar si el correo ya está en uso
         const usuarioExistente = await Usuario.findOne({ correo });
@@ -17,6 +17,8 @@ router.post('/api/usuarios/registro', async (req, res) => {
         const nuevoUsuario = new Usuario({
             tipoDocumento,
             numeroDocumento,
+            nombre,
+            apellido,
             correo,
             contraseña
         });
